@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chasse au Trésor</title>
+  <style>
+    /* ======================= STYLE GLOBAL ======================= */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      text-align: center;
+      background: url('images/fond_magique.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ======================= HEADER ======================= */
+    header {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    header h1 {
+      font-size: 52px;
+      margin: 0;
+      letter-spacing: 5px;
+      text-shadow: 2px 2px 8px black;
+      color: #32CD32;
+    }
+
+    header img {
+      height: 60px;
+    }
+
+    /* ======================= CONTAINER PRINCIPAL ======================= */
+    .container {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .box {
+      background: rgba(0, 0, 0, 0.65);
+      padding: 70px 100px;
+      border-radius: 25px;
+      box-shadow: 0 0 25px black;
+      text-align: center;
+    }
+
+    .box h2 {
+      font-size: 42px;
+      margin-bottom: 30px;
+      color: #32CD32;
+      text-shadow: 3px 3px 10px black;
+    }
+
+    .box p {
+      font-size: 22px;
+    }
+
+    /* ======================= INPUT AVEC LOGO ======================= */
+    .input-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    input {
+      font-size: 22px;
+      padding: 14px;
+      margin: 10px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      width: 320px;
+      padding-right: 50px; /* espace pour logo */
+    }
+
+    .input-wrapper img {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 40px;
+      pointer-events: none;
+    }
+
+    /* ======================= BOUTON ======================= */
+    button {
+      font-size: 22px;
+      padding: 14px 30px;
+      margin: 20px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: #32CD32;
+      color: black;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #228B22;
+    }
+
+    /* ======================= RESULTATS ======================= */
+    h2#result, p#start {
+      margin-top: 30px;
+      font-size: 24px;
+      text-shadow: 2px 2px 6px black;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- ======================= HEADER ======================= -->
+  <header>
+    <img src="images/logo_wefat.png" alt="logo gauche">
+    <h1>WEFArfadeT</h1>
+    <img src="images/logo_wefat.png" alt="logo droite">
+  </header>
+
+  <!-- ======================= CONTAINER ======================= -->
+  <div class="container">
+    <div class="box">
+      <h2>Découvre ton équipe !</h2>
+      <p>Entre ton nom :</p>
+
+      <div class="input-wrapper">
+        <input type="text" id="playerName" placeholder="Jean Dupont">
+        <img src="images/logo_wefat.png" alt="logo input">
+      </div>
+      <br>
+
+      <button onclick="assignTeam()">Valider</button>
+
+      <h2 id="result"></h2>
+      <p id="start"></p>
+    </div>
+  </div>
+
+  <!-- ======================= SCRIPT ======================= -->
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbznpzT1uJuWxyahboSPaW4tz2nfnikjlF77nHTMlT8-kHmAi_OFJKAnItqPp9TOdTGk/exec";
+
+    function assignTeam() {
+      const name = document.getElementById('playerName').value.trim();
+      if (!name) return alert("Entre ton nom!");
+
+      fetch(`${WEB_APP_URL}?name=${encodeURIComponent(name)}`)
+        .then(res => res.json())
+        .then(data => {
+          if(data.ok){
+            document.getElementById('result').textContent = "Ton équipe : " + data.team;
+            document.getElementById('start').textContent = "Ta salle de départ : " + data.start;
+          } else {
+            document.getElementById('result').textContent = "Erreur : " + data.error;
+            document.getElementById('start').textContent = "";
+          }
+        })
+        .catch(err => {
+          document.getElementById('result').textContent = "Erreur, réessaye plus tard";
+          console.error(err);
+        });
+    }
+  </script>
+</body>
+</html>
